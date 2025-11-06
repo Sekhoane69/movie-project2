@@ -1,0 +1,26 @@
+{
+  "name": "movie-review-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Movie Review Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "movies",
+    "reviews",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "firebase-admin": "^11.11.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
