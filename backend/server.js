@@ -3,27 +3,28 @@ const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
 require('dotenv').config();
-
-// Initialize Firebase Admin
-let credential;
+// ========================== FIREBASE ADMIN INIT ========================== //
+let serviceAccount;
 try {
-  const serviceAccount = require('./serviceAccountKey.json');
-  credential = admin.credential.cert(serviceAccount);
+  // Prefer local key if available (for local dev)
+  serviceAccount = require('./serviceAccountKey.json');
+  console.log('✅ Using local Firebase service account file');
 } catch (error) {
-  console.log('Service account file not found, using environment variables');
-  credential = admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  });
+  // Use environment variables on Render
+  console.log('⚙️ Using Firebase credentials from environment variables');
+  serviceAccount = JSON.parse(process.env.FIREBASE_KEY || '{}');
+}
+
+if (!serviceAccount.project_id || !serviceAccount.private_key) {
+  console.error('❌ Missing Firebase credentials. Check FIREBASE_KEY in Render.');
 }
 
 admin.initializeApp({
-  credential: credential
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const db = admin.firestore();
-const app = express();
+
 
 // Middleware
 app.use(cors());
